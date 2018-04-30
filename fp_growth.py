@@ -10,7 +10,11 @@ Basic usage of the module is very simple:
 """
 
 from collections import defaultdict, namedtuple
-from itertools import imap
+# from itertools import imap
+try:
+    from itertools import imap
+except ImportError:
+    imap = map
 
 __author__ = 'Eric Naeseth <eric@naeseth.com>'
 __copyright__ = 'Copyright © 2009 Eric Naeseth'
@@ -40,14 +44,16 @@ def find_frequent_itemsets(transactions, minimum_support, include_support=False)
             items[item] += 1
 
     # Remove infrequent items from the item support dictionary.
-    items = dict((item, support) for item, support in items.iteritems()
+    # items = dict((item, support) for item, support in items.iteritems()
+    items = dict((item, support) for item, support in items.items()
         if support >= minimum_support)
 
     # Build our FP-tree. Before any transactions can be added to the tree, they
     # must be stripped of infrequent items and their surviving items must be
     # sorted in decreasing order of frequency.
     def clean_transaction(transaction):
-        transaction = filter(lambda v: v in items, transaction)
+        # transaction = filter(lambda v: v in items, transaction)
+        transaction = list(filter(lambda v: v in items, transaction))
         transaction.sort(key=lambda v: items[v], reverse=True)
         return transaction
 
@@ -136,7 +142,8 @@ class FPTree(object):
         element of the tuple is the item itself, and the second element is a
         generator that will yield the nodes in the tree that belong to the item.
         """
-        for item in self._routes.iterkeys():
+        # for item in self._routes.iterkeys():
+        for item in self._routes.keys():
             yield (item, self.nodes(item))
 
     def nodes(self, item):
@@ -167,15 +174,15 @@ class FPTree(object):
         return (collect_path(node) for node in self.nodes(item))
 
     def inspect(self):
-        print 'Tree:'
+        print ('Tree:')
         self.root.inspect(1)
 
         print
-        print 'Routes:'
+        print ('Routes:')
         for item, nodes in self.items():
-            print '  %r' % item
+            print ('  %r' % item)
             for node in nodes:
-                print '    %r' % node
+                print ('    %r' % node)
 
 def conditional_tree_from_paths(paths):
     """Build a conditional FP-tree from the given prefix paths."""
@@ -355,4 +362,4 @@ if __name__ == '__main__':
 
     result = sorted(result, key=lambda i: i[0])
     for itemset, support in result:
-        print str(itemset) + ' ' + str(support)
+        print (str(itemset) + ' ' + str(support))

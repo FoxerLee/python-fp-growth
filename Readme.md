@@ -1,6 +1,10 @@
 Python FP-Growth
 ================
 
+![](https://img.shields.io/badge/python-3.6-blue.svg) ![](https://img.shields.io/github/license/mashape/apistatus.svg)
+
+**Just make it available for python 3.6!**
+
 This module provides a pure Python implementation of the FP-growth algorithm for
 finding frequent itemsets. FP-growth exploits an (often-valid) assumption that
 many transactions will have items in common to build a prefix tree. If the
@@ -25,7 +29,7 @@ in your transactions with the following code:
     from fp_growth import find_frequent_itemsets
     for itemset in find_frequent_itemsets(transactions, minsup):
         print itemset
-        
+
 Note that `find_frequent_itemsets` returns a generator of itemsets, not a
 greedily-populated list. Each item must be hashable (i.e., it must be valid as
 a member of a dictionary or a set).
@@ -38,7 +42,7 @@ read a list of transactions formatted as a CSV file. (An example of such a file
 in included in the `examples` directory.)
 
     python -m fp_growth -s {minimum support} {path to CSV file}
-    
+
 For example, to find the itemsets with support ≥ 4 in the included example file:
 
     python -m fp_growth -s 4 examples/tsk.csv
